@@ -12,11 +12,10 @@
         android:background="@drawable/btn_red"
         android:width="100dp"
         android:height="100dp"
-        android:layout_marginLeft="80dp"
-        android:layout_marginStart="80dp"
-        android:layout_alignTop="@+id/button_yellow"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
+        android:layout_marginTop="47dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignLeft="@+id/button_green"
+        android:layout_alignStart="@+id/button_green" />
 
     <Button
         android:layout_width="wrap_content"
@@ -25,9 +24,11 @@
         android:background="@drawable/btn_green"
         android:height="100dp"
         android:width="100dp"
+        android:layout_marginLeft="176dp"
+        android:layout_marginStart="176dp"
         android:layout_below="@+id/button_red"
-        android:layout_toLeftOf="@+id/button_blue"
-        android:layout_toStartOf="@+id/button_blue" />
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
 
     <Button
         android:layout_width="wrap_content"
@@ -36,9 +37,9 @@
         android:background="@drawable/btn_blue"
         android:width="100dp"
         android:height="100dp"
-        android:layout_below="@+id/button_red"
-        android:layout_toRightOf="@+id/button_red"
-        android:layout_toEndOf="@+id/button_red" />
+        android:layout_alignBottom="@+id/button_green"
+        android:layout_toRightOf="@+id/button_green"
+        android:layout_toEndOf="@+id/button_green" />
 
     <Button
         android:layout_width="wrap_content"
@@ -47,9 +48,8 @@
         android:background="@drawable/btn_yellow"
         android:height="100dp"
         android:width="100dp"
-        android:layout_marginTop="100dp"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/button_red"
-        android:layout_toEndOf="@+id/button_red" />
+        android:layout_alignTop="@+id/button_red"
+        android:layout_alignLeft="@+id/button_blue"
+        android:layout_alignStart="@+id/button_blue" />
 
 </RelativeLayout>
