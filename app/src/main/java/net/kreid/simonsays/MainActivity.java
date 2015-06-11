@@ -1,6 +1,8 @@
 package net.kreid.simonsays;
 
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -33,6 +35,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         game.restart();
+
         allowInput = true;
     }
 
@@ -46,6 +49,7 @@ public class MainActivity extends ActionBarActivity {
     {
         super.onResume();
 
+        updateScore();
         playGameState();
 
         final Button redButton = (Button) findViewById(R.id.button_red);
@@ -68,7 +72,7 @@ public class MainActivity extends ActionBarActivity {
 
                 if(correct)
                 {
-                    playGameState();
+                    guessCorrect();
                 }
             }
         });
@@ -93,7 +97,7 @@ public class MainActivity extends ActionBarActivity {
 
                 if(correct)
                 {
-                    playGameState();
+                    guessCorrect();
                 }
             }
         });
@@ -118,7 +122,7 @@ public class MainActivity extends ActionBarActivity {
 
                 if(correct)
                 {
-                    playGameState();
+                    guessCorrect();
                 }
             }
         });
@@ -143,73 +147,177 @@ public class MainActivity extends ActionBarActivity {
 
                 if(correct)
                 {
-                    Handler handler2 = new Handler();
-                    handler2.postDelayed(new Runnable() {
-                        public void run() {
-                            playGameState();
-                        }
-                    }, 2000);
-
+                    guessCorrect();
                 }
+            }
+        });
+    }
+
+    public void setActivityBackgroundColor(int color) {
+        View view = this.getWindow().getDecorView();
+        view.setBackgroundColor(color);
+    }
+
+    private void guessCorrect()
+    {
+
+        updateScore();
+
+        if(game.getScore() == game.getGameState().size()) {
+            setActivityBackgroundColor(Color.GREEN);
+
+            new CountDownTimer(1000, 50) {
+
+                @Override
+                public void onTick(long arg0) {
+                    // TODO Auto-generated method stub
+                }
+
+                @Override
+                public void onFinish() {
+                    setActivityBackgroundColor(Color.WHITE);
+                    resetButtons();
+                    game.iterate();
+                    playGameState();
+                }
+            }.start();
+        }
+    }
+
+    private void guessWrong()
+    {
+        setActivityBackgroundColor(Color.RED);
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        resetButtons();
+        // TODO: Reset / exit
+    }
+
+    private void resetButtons()
+    {
+                List<Game.Colour> gameState = game.getGameState();
+                final Button redButton = (Button) findViewById(R.id.button_red);
+                final Button greenButton = (Button) findViewById(R.id.button_green);
+                final Button blueButton = (Button) findViewById(R.id.button_blue);
+                final Button yellowButton = (Button) findViewById(R.id.button_yellow);
+
+                redButton.setBackgroundResource(R.drawable.btn_red);
+                greenButton.setBackgroundResource(R.drawable.btn_green);
+                blueButton.setBackgroundResource(R.drawable.btn_blue);
+                yellowButton.setBackgroundResource(R.drawable.btn_yellow);
+    }
+
+    private void activateButtonForMillis(final Game.Colour colour, final int millis)
+    {
+        final Button redButton = (Button) findViewById(R.id.button_red);
+        final Button greenButton = (Button) findViewById(R.id.button_green);
+        final Button blueButton = (Button) findViewById(R.id.button_blue);
+        final Button yellowButton = (Button) findViewById(R.id.button_yellow);
+
+        Handler activateHandler = new Handler();
+        activateHandler.post(new Runnable() {
+            public void run() {
+                switch (colour) {
+                    case RED:
+                        MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP1);
+                        redButton.setBackgroundResource(R.drawable.btn_red_pressed);
+                        break;
+                    case GREEN:
+                        MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP2);
+                        greenButton.setBackgroundResource(R.drawable.btn_green_pressed);
+                        break;
+                    case BLUE:
+                        MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP3);
+                        blueButton.setBackgroundResource(R.drawable.btn_blue_pressed);
+                        break;
+                    case YELLOW:
+                        MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP4);
+                        yellowButton.setBackgroundResource(R.drawable.btn_yellow_pressed);
+                        break;
+                }
+
+                new CountDownTimer(millis, 50) {
+
+                    @Override
+                    public void onTick(long arg0) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        resetButtons();
+                    }
+                }.start();
+            }
+        });
+    }
+
+    private void updateScore()
+    {
+        Handler activateHandler = new Handler();
+        activateHandler.post(new Runnable() {
+            public void run() {
+                int score = game.getScore();
+                final TextView scoreText = (TextView) findViewById(R.id.scoreText);
+                scoreText.setText(String.valueOf(score));
             }
         });
     }
 
     private void playGameState()
     {
-        allowInput = false;
 
-        List<Game.Colour> gameState = game.getGameState();
-        final Button redButton = (Button) findViewById(R.id.button_red);
-        final Button greenButton = (Button) findViewById(R.id.button_green);
-        final Button blueButton = (Button) findViewById(R.id.button_blue);
-        final Button yellowButton = (Button) findViewById(R.id.button_yellow);
+                final List<Game.Colour> gameState = game.getGameState();
+                final Button redButton = (Button) findViewById(R.id.button_red);
+                final Button greenButton = (Button) findViewById(R.id.button_green);
+                final Button blueButton = (Button) findViewById(R.id.button_blue);
+                final Button yellowButton = (Button) findViewById(R.id.button_yellow);
 
-        for(int i = 0; i < gameState.size(); i++)
-        {
-            switch (gameState.get(i))
-            {
-                case RED:
-                    Handler handler = new Handler();
-                    handler.postDelayed(new Runnable() {
-                        public void run() {
-                            MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP1);
-                            redButton.setBackgroundResource(R.drawable.btn_red);
-                        }
-                    }, 500);
+                allowInput = false;
 
-                    break;
-                case GREEN:
-                    Handler handler2 = new Handler();
-                    handler2.postDelayed(new Runnable() {
-                        public void run() {
-                            MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP2);
-                            greenButton.setBackgroundResource(R.drawable.btn_green);
-                        }
-                    }, 500);
-                    break;
-                case BLUE:
-                    Handler handler3 = new Handler();
-                    handler3.postDelayed(new Runnable() {
-                        public void run() {
-                            MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP3);
-                            blueButton.setBackgroundResource(R.drawable.btn_blue);
-                        }
-                    }, 500);
-                    break;
-                case YELLOW:
-                    Handler handler4 = new Handler();
-                    handler4.postDelayed(new Runnable() {
-                        public void run() {
-                            MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP4);
-                            yellowButton.setBackgroundResource(R.drawable.btn_yellow);
-                        }
-                    }, 500);
-                    break;
-            }
+                resetButtons();
+
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
 
-        allowInput = true;
+        final int[] i = {0};
+        int timerSize = 1000 * (gameState.size()+1);
+        new CountDownTimer(timerSize, 1000) {
+
+            @Override
+            public void onTick(long arg0) {
+                switch (gameState.get(i[0]))
+                {
+                    case RED:
+                        activateButtonForMillis(Game.Colour.RED, 1000);
+                        break;
+                    case GREEN:
+                        activateButtonForMillis(Game.Colour.GREEN, 1000);
+                        break;
+                    case BLUE:
+                        activateButtonForMillis(Game.Colour.BLUE, 1000);
+                        break;
+                    case YELLOW:
+                        activateButtonForMillis(Game.Colour.YELLOW, 1000);
+                        break;
+                }
+
+                i[0]++;
+            }
+
+            @Override
+            public void onFinish() {
+                allowInput = true;
+            }
+        }.start();
     }
 
     @Override

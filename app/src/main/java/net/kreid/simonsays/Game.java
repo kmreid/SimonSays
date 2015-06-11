@@ -9,15 +9,17 @@ import java.util.Random;
  */
 public class Game {
 
-    private List<Colour> _playerChoices;
+    //private List<Colour> _playerChoices;
     private List<Colour> _gameChoices;
     private int _stepIndex;
+    private int _score;
 
     public Game()
     {
-        _playerChoices = new ArrayList<Colour>();
+        //_playerChoices = new ArrayList<Colour>();
         _gameChoices = new ArrayList<Colour>();
         _stepIndex = 0;
+        _score = 0;
     }
 
     public void iterate()
@@ -25,12 +27,16 @@ public class Game {
         Colour nextColour = randomEnum(Colour.class);
         _gameChoices.add(nextColour);
         _stepIndex = 0;
-        _playerChoices = new ArrayList<Colour>();
+        //_stepIndex++;
+       // _playerChoices = new ArrayList<Colour>();
     }
 
     public void restart()
     {
+       //_playerChoices = new ArrayList<Colour>();
         _gameChoices = new ArrayList<Colour>();
+        _stepIndex = 0;
+        _score = 0;
         iterate();
     }
 
@@ -39,15 +45,21 @@ public class Game {
         return _gameChoices;
     }
 
+    public int getScore()
+    {
+        return _score;
+    }
+
+
     public Boolean makeSelection(Colour choice)
     {
-        _playerChoices.add(choice);
+        //_playerChoices.add(choice);
 
         Boolean correct = _gameChoices.get(_stepIndex) == choice;
 
         if(correct)
         {
-            _stepIndex++;
+            _score++;
         }
 
         return correct;

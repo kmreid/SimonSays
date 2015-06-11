@@ -52,4 +52,24 @@
         android:layout_toRightOf="@+id/button_red"
         android:layout_toEndOf="@+id/button_red" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Score:"
+        android:id="@+id/textView"
+        android:layout_alignParentBottom="true"
+        android:layout_toRightOf="@+id/button_green"
+        android:layout_toEndOf="@+id/button_green" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="  "
+        android:id="@+id/scoreText"
+        android:layout_alignParentBottom="true"
+        android:layout_alignRight="@+id/button_blue"
+        android:layout_alignEnd="@+id/button_blue" />
+
 </RelativeLayout>
