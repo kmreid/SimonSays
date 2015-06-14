@@ -1,13 +1,20 @@
 package net.kreid.simonsays;
 
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.Paint;
 import android.os.CountDownTimer;
 import android.os.Handler;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
+import android.view.SurfaceHolder;
+import android.view.SurfaceView;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -15,7 +22,7 @@ import android.widget.TextView;
 import java.util.List;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends Activity {
 
     protected static final int RESULT_CLOSE_ALL = 0;
     public static Game game;
@@ -68,12 +75,7 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }, 1000);
 
-                Boolean correct = game.makeSelection(Game.Colour.RED);
-
-                if(correct)
-                {
-                    guessCorrect();
-                }
+                checkSelection(game.makeSelection(Game.Colour.RED));
             }
         });
 
@@ -93,12 +95,7 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }, 1000);
 
-                Boolean correct = game.makeSelection(Game.Colour.GREEN);
-
-                if(correct)
-                {
-                    guessCorrect();
-                }
+                checkSelection(game.makeSelection(Game.Colour.GREEN));
             }
         });
 
@@ -106,7 +103,7 @@ public class MainActivity extends ActionBarActivity {
         blueButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                if(allowInput == false) return;
+                if (allowInput == false) return;
 
                 MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP3);
                 blueButton.setBackgroundResource(R.drawable.btn_blue_pressed);
@@ -118,12 +115,7 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }, 1000);
 
-                Boolean correct = game.makeSelection(Game.Colour.BLUE);
-
-                if(correct)
-                {
-                    guessCorrect();
-                }
+                checkSelection(game.makeSelection(Game.Colour.BLUE));
             }
         });
 
@@ -131,7 +123,7 @@ public class MainActivity extends ActionBarActivity {
         yellowButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
 
-                if(allowInput == false) return;
+                if (allowInput == false) return;
 
                 MainActivity.sounds.PlaySound(Sounds.SoundType.BEEP4);
                 yellowButton.setBackgroundResource(R.drawable.btn_yellow_pressed);
@@ -143,12 +135,7 @@ public class MainActivity extends ActionBarActivity {
                     }
                 }, 500);
 
-                Boolean correct = game.makeSelection(Game.Colour.YELLOW);
-
-                if(correct)
-                {
-                    guessCorrect();
-                }
+                checkSelection(game.makeSelection(Game.Colour.YELLOW));
             }
         });
     }
@@ -158,13 +145,34 @@ public class MainActivity extends ActionBarActivity {
         view.setBackgroundColor(color);
     }
 
-    private void guessCorrect()
+    private void checkSelection(Boolean correct)
     {
+        if(correct)
+        {
+            if(game.getScore() == game.getGameState().size()) {
+                setActivityBackgroundColor(Color.GREEN);
 
-        updateScore();
+                new CountDownTimer(1000, 50) {
 
-        if(game.getScore() == game.getGameState().size()) {
-            setActivityBackgroundColor(Color.GREEN);
+                    @Override
+                    public void onTick(long arg0) {
+                        // TODO Auto-generated method stub
+                    }
+
+                    @Override
+                    public void onFinish() {
+                        setActivityBackgroundColor(Color.WHITE);
+                        resetButtons();
+                        game.iterate();
+                        updateScore();
+                        playGameState();
+                    }
+                }.start();
+            }
+        }
+        else
+        {
+            setActivityBackgroundColor(Color.RED);
 
             new CountDownTimer(1000, 50) {
 
@@ -177,27 +185,13 @@ public class MainActivity extends ActionBarActivity {
                 public void onFinish() {
                     setActivityBackgroundColor(Color.WHITE);
                     resetButtons();
-                    game.iterate();
+                    game.restart();
+                    updateScore();
                     playGameState();
                 }
             }.start();
         }
     }
-
-    private void guessWrong()
-    {
-        setActivityBackgroundColor(Color.RED);
-
-        try {
-            Thread.sleep(1000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        resetButtons();
-        // TODO: Reset / exit
-    }
-
     private void resetButtons()
     {
                 List<Game.Colour> gameState = game.getGameState();
@@ -331,15 +325,12 @@ public class MainActivity extends ActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
-
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

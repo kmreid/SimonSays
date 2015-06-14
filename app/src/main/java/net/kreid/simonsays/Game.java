@@ -31,6 +31,7 @@ public class Game
     {
         _gameChoices = new ArrayList<Colour>();
         _score = 0;
+        _stepIndex = 0;
         iterate();
     }
 
@@ -46,11 +47,17 @@ public class Game
 
     public Boolean makeSelection(Colour choice)
     {
-        Boolean correctColour = _gameChoices.get(_score) == choice;
+        Boolean correctColour = _gameChoices.get(_stepIndex) == choice;
 
-        if(_score+1 == _gameChoices.size() && correctColour)
+        if(correctColour)
         {
-            _score++;
+            _stepIndex++;
+
+            if(_stepIndex == _gameChoices.size())
+            {
+                _score++;
+            }
+
             return true;
         }
 
