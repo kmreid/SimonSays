@@ -25,12 +25,16 @@ public class Sounds
         int sBlue = _pool.load(cxt, R.raw.beep2, 1);
         int sGreen = _pool.load(cxt, R.raw.beep3, 1);
         int sYellow = _pool.load(cxt, R.raw.beep4, 1);
+        int sWin = _pool.load(cxt, R.raw.correct, 1);
+        int sLose = _pool.load(cxt, R.raw.wrong, 1);
 
         _sounds = new Hashtable<SoundType, Integer>();
         _sounds.put(SoundType.BEEP1, sRed);
         _sounds.put(SoundType.BEEP2, sBlue);
         _sounds.put(SoundType.BEEP3, sGreen);
         _sounds.put(SoundType.BEEP4, sYellow);
+        _sounds.put(SoundType.WIN, sWin);
+        _sounds.put(SoundType.LOSE, sLose);
     }
 
     public void PlaySound(SoundType type)
@@ -41,6 +45,6 @@ public class Sounds
 
     public enum SoundType
     {
-        BEEP1, BEEP2, BEEP3, BEEP4
+        BEEP1, BEEP2, BEEP3, BEEP4, WIN, LOSE
     }
 }

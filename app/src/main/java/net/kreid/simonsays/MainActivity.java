@@ -151,6 +151,7 @@ public class MainActivity extends Activity {
         {
             if(game.getScore() == game.getGameState().size()) {
                 setActivityBackgroundColor(Color.GREEN);
+                MainActivity.sounds.PlaySound(Sounds.SoundType.WIN);
 
                 new CountDownTimer(1000, 50) {
 
@@ -173,6 +174,7 @@ public class MainActivity extends Activity {
         else
         {
             setActivityBackgroundColor(Color.RED);
+            MainActivity.sounds.PlaySound(Sounds.SoundType.LOSE);
 
             new CountDownTimer(1000, 50) {
 
@@ -265,7 +267,6 @@ public class MainActivity extends Activity {
 
     private void playGameState()
     {
-
                 final List<Game.Colour> gameState = game.getGameState();
                 final Button redButton = (Button) findViewById(R.id.button_red);
                 final Button greenButton = (Button) findViewById(R.id.button_green);
